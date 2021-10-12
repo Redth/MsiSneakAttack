@@ -1,5 +1,5 @@
-﻿using Be.Timvw.Framework.ComponentModel;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
@@ -9,6 +9,8 @@ namespace MsiSneakAttack
 {
     public partial class frmMain : Form
     {
+        private Dictionary<string, MsiInfo>? products;
+
         public frmMain()
         {
             InitializeComponent();
@@ -16,10 +18,30 @@ namespace MsiSneakAttack
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            var products = Msi.GetProducts();
-            var sortable = new SortableBindingList<MsiInfo>(products.OrderBy(p => p.ProductName));
+            products = Msi.GetProducts().ToDictionary(m => m.ProductCode, m => m);
 
-            msiInfoBindingSource.DataSource = sortable;
+            var table = new DataTable();
+
+            var properties = typeof(MsiInfo).GetProperties();
+
+            foreach (var prop in properties)
+            {
+                var type = prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)
+                    ? prop.PropertyType.GenericTypeArguments[0]
+                    : prop.PropertyType;
+                table.Columns.Add(prop.Name, type);
+            }
+
+            foreach (var msi in products.Values)
+            {
+                var row = table.NewRow();
+                foreach (var prop in properties)
+                    row[prop.Name] = prop.GetValue(msi) ?? DBNull.Value;
+
+                table.Rows.Add(row);
+            }
+
+            msiInfoBindingSource.DataSource = table;
         }
 
         private void dataGridView1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
@@ -29,16 +51,31 @@ namespace MsiSneakAttack
 
         private void dataGridView1_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
-            if (e.Row.DataBoundItem is MsiInfo msi)
+            if (e.Row.DataBoundItem is DataRowView row)
             {
+                var productCode = row[nameof(MsiInfo.ProductCode)];
+
                 var p = new Process();
                 p.StartInfo.FileName = "msiexec";
-                p.StartInfo.Arguments = "/x " + msi.ProductCode + " IGNOREDEPENDENCIES=ALL ALLOWMSIUNINSTALL=1";
+                p.StartInfo.Arguments = $"/x {productCode} IGNOREDEPENDENCIES=ALL ALLOWMSIUNINSTALL=1";
                 p.Start();
                 p.WaitForExit();
 
                 if (p.ExitCode != 0)
                     e.Cancel = true;
+            }
+        }
+
+        private void searchBox_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                msiInfoBindingSource.Filter = searchBox.Text;
+                statusLabel.Text = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                statusLabel.Text = ex.Message;
             }
         }
     }

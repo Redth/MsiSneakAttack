@@ -41,8 +41,12 @@
             this.installLocationDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.installSourceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.msiInfoBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.searchBox = new System.Windows.Forms.TextBox();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.msiInfoBindingSource)).BeginInit();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridView1
@@ -63,13 +67,13 @@
             this.installSourceDataGridViewTextBoxColumn});
             this.dataGridView1.DataSource = this.msiInfoBindingSource;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dataGridView1.Location = new System.Drawing.Point(0, 47);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidth = 82;
             this.dataGridView1.RowTemplate.Height = 41;
-            this.dataGridView1.Size = new System.Drawing.Size(2203, 1037);
+            this.dataGridView1.Size = new System.Drawing.Size(2203, 968);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridView1_RowsRemoved);
             this.dataGridView1.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGridView1_UserDeletingRow);
@@ -172,19 +176,51 @@
             this.msiInfoBindingSource.DataSource = typeof(MsiSneakAttack.MsiInfo);
             this.msiInfoBindingSource.Sort = "ProductName,InstallDate";
             // 
+            // searchBox
+            // 
+            this.searchBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this.searchBox.Location = new System.Drawing.Point(0, 0);
+            this.searchBox.Name = "searchBox";
+            this.searchBox.PlaceholderText = "Search...";
+            this.searchBox.Size = new System.Drawing.Size(2203, 47);
+            this.searchBox.TabIndex = 1;
+            this.searchBox.Text = "ProductName like \'%%\' AND PackageName like \'%%\'";
+            this.searchBox.TextChanged += new System.EventHandler(this.searchBox_TextChanged);
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(40, 40);
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusLabel});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 1015);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(2203, 22);
+            this.statusStrip1.TabIndex = 2;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(0, 9);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(17F, 41F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(2203, 1037);
             this.Controls.Add(this.dataGridView1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.searchBox);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmMain";
             this.Text = "MSI Sneak Attack - Remove those Pesky installs!";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.msiInfoBindingSource)).EndInit();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -201,5 +237,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn languageDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn installLocationDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn installSourceDataGridViewTextBoxColumn;
+        private System.Windows.Forms.TextBox searchBox;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
     }
 }
