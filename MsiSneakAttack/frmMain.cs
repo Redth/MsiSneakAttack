@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using Be.Timvw.Framework.ComponentModel;
+using System;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MsiSneakAttack
@@ -21,21 +17,14 @@ namespace MsiSneakAttack
         private void Form1_Load(object sender, EventArgs e)
         {
             var products = Msi.GetProducts();
+            var sortable = new SortableBindingList<MsiInfo>(products.OrderBy(p => p.ProductName));
 
-            msiInfoBindingSource.DataSource = products.OrderBy(p => p.ProductName);
-        }
-
-        private void dataGridView1_UserDeletedRow(object sender, DataGridViewRowEventArgs e)
-        {
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
+            msiInfoBindingSource.DataSource = sortable;
         }
 
         private void dataGridView1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine(e.RowIndex.ToString());
+            Debug.WriteLine(e.RowIndex.ToString());
         }
 
         private void dataGridView1_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
@@ -49,7 +38,7 @@ namespace MsiSneakAttack
                 p.WaitForExit();
 
                 if (p.ExitCode != 0)
-                    e.Cancel = true;                
+                    e.Cancel = true;
             }
         }
     }
